@@ -1,26 +1,24 @@
-/*
-|--------------------------------------------------------------------------
-| 建立模型
-|--------------------------------------------------------------------------
-|
-*/
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const ObjectId = Schema.Types.ObjectId;
+
+/**
+ * 分类模型
+ */
 const CategorySchema = new Schema({
-    name:{
-        type:String,
-        default:''
+    name: String,
+    path: String,
+    sort: {
+        type: Number,
+        default: 100
     },
-    path:{
-        type:String,
-        default:''
+    pid:{
+        type:Schema.Types.ObjectId
     },
     template:{
         type:String,
         default:''
     },
-    sort:{
+    is_nav:{
         type:Number,
         default:0
     },
@@ -28,23 +26,19 @@ const CategorySchema = new Schema({
         type:Number,
         default:0
     },
-    is_nav:{
-        type:Number,
-        default:0
-    },
     create_at:{
         type:Date,
-        default:Date.now()
+        default:Date.now,
     },
     update_at:{
         type:Date,
-        default:Date.now()
+        default:Date.now
     },
     delete_at:{
         type:Date,
         default:null
     }
-});
+})
 
 const Category = mongoose.model('Category', CategorySchema);
 module.exports = Category;

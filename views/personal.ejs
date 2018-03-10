@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>我的博客文章列表1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!--width=device-width, initial-scale=1适当的绘制和触屏缩放;user-scalable=no禁用缩放-->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!--bootstrap官方样式-->
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet"href="/css/bootstrap-switch.min.css">
+    <!--强跨浏览器表现的一致性css 重置样式-->
+    <link rel="stylesheet" href="/css/main.css">
+
+    <!--自用样式-->
+</head>
+
+<body>
+
+<%- include('header') %>
+
+<%- include('nav') %>
+
+<!-- 主体 -->
+<section class="container">
+    <div class="tab" role="tabpanel">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs col-md-1" role="tablist">
+            <li role="presentation" class="active"><a href="#Section1" aria-controls="" role="tab" data-toggle="tab"><i
+                            class="glyphicon glyphicon-file"></i>基本资料</a></li>
+            <li role="presentation "><a href="#Section2" aria-controls="" role="tab" data-toggle="tab"><i
+                            class="glyphicon glyphicon-book"></i>文章管理</a></li>
+            <li role="presentation"><a href="#Section3" aria-controls="" role="tab" data-toggle="tab"><i
+                            class="glyphicon glyphicon-send"></i>分类管理</a></li>
+            <li role="presentation"><a href="#Section4" aria-controls="" role="tab" data-toggle="tab"><i
+                            class="glyphicon glyphicon-floppy-save"></i>草稿箱</a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content col-md-11 tabs">
+            <!-- 基本资料 -->
+            <%- include('personal/user') %>
+            <!-- 文章管理 -->
+            <%- include('article') %>
+            <!-- 分类管理 -->
+            <%- include('category') %>
+            <!-- 草稿箱 -->
+            <div role="tabpanel" class="tab-pane fade" id="Section4"> 保持</div>
+        </div>
+    </div>
+</section>
+
+<%- include('footer') %>
+
+<script src="/js/jquery.min.js"></script><!--jquery-->
+<script src="/js/bootstrap.min.js"></script><!--bootstrap官方js-->
+<script type="text/javascript" src="/js/jquery.basictable.min.js"></script>
+<script src="/js/bootstrap-switch.min.js"></script>
+<script src="/js/layer/article.js"></script>
+<script src="/js/layer/layer.js"></script>
+<script src="/js/category.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //表格适应初始化
+        $('#table').basictable();
+    });
+</script>
+<script type="text/javascript">
+    //编辑页面显示隐藏
+    $(".pubbox").hide();
+
+    function pubboxshow() {
+        $(".pubbox").show();
+        $(".pubboxw").hide();
+    }
+
+    //搜索筛选下拉
+    $(document).ready(function () {
+
+            $('.son_ul').hide();
+
+            $('.select_box span').click(function () {
+
+                    $(this).parent().find('ul.son_ul').slideDown();  //找到ul.son_ul显示
+                    $(this).parent().find('li').hover(function () {
+                        $(this).addClass('hover')
+                    }, function () {
+                        $(this).removeClass('hover')
+                    }); //li的hover效果
+                    $(this).parent().hover(function () {
+                        },
+                        function () {
+                            $(this).parent().find("ul.son_ul").slideUp();
+                        }
+                    );
+                },
+            );
+            $('ul.son_ul li').click(function () {
+                $(this).parents('li').find('span').html($(this).html());
+                $(this).parents('li').find('ul').slideUp();
+            });
+        }
+    );
+
+    //图片上传预览
+    function preview(file) {
+        var prevDiv = document.getElementById('preview');
+        if (file.files && file.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (evt) {
+                prevDiv.innerHTML = '<img src="' + evt.target.result + '" />';
+            }
+            reader.readAsDataURL(file.files[0]);
+        } else {
+            prevDiv.innerHTML = '<div class="img" style="filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale,src=\'' + file.value + '\'"></div>';
+        }
+    }
+
+    //图片上传预览
+    function preview2(file) {
+        var prevDiv = document.getElementById('preview2');
+        if (file.files && file.files[0]) {
+            var filename = file.value;
+            var index = filename.lastIndexOf('.');
+            var suffix =  filename.substring(index);
+            $("#suffix").val(suffix)
+            var reader = new FileReader();
+            reader.onload = function (evt) {
+                $("#imgdata").val(evt.target.result)
+                prevDiv.innerHTML = '<img src="' + evt.target.result + '" />';
+            }
+            reader.readAsDataURL(file.files[0]);
+        } else {
+            prevDiv.innerHTML = '<div class="img" style="filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale,src=\'' + file.value + '\'"></div>';
+        }
+    }
+
+    //--------------------------用户信息--------------------------------
+
+    function updateUser() {
+        var nickname = $("#nickname").val();
+        var signature = $("#signature").val();
+        var position = $("#position").val();
+        var other = $("#other").val();
+        var imgdata = $("#imgdata").val();
+        var suffix = $("#suffix").val();
+        $.post('/users/personal', {
+            nickname: nickname,
+            signature: signature,
+            position: position,
+            other: other,
+            imgdata: imgdata,
+            suffix:suffix,
+        }, function (data) {
+            if (data.status == 1) {
+                alert(data.msg);
+            } else {
+                alert(data.msg);
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
